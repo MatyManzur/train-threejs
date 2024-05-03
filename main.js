@@ -1,6 +1,7 @@
 import * as th from 'three';
 import { generateTerrain, generateWater } from './terrain';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { generateForest } from './tree';
 
 const CAMERA_STARTING_POSITION = new th.Vector3(200,200,400);
 
@@ -31,6 +32,10 @@ scene.add(ambientLight);
 // TODO: borrar helpers
 const axesHelper = new th.AxesHelper( 50 );
 scene.add( axesHelper );
+
+const forest = await generateForest(100, 24, true);
+forest.position.set(320,58,200);
+scene.add(forest);
 
 
 // Render Loop
