@@ -16,13 +16,13 @@ document.body.appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.update();
 
-// Terrain
+// Terreno y Lago
 const terrain = await generateTerrain();
 scene.add(terrain);
 const water = await generateWater(42);
 scene.add(water);
 
-// Lights
+// Iluminación
 const ambientLight = new th.AmbientLight('#ffffff', 1);
 const directionaLight = new th.DirectionalLight('#ffffff', 1);
 directionaLight.position.set(1000,1000,1000);
@@ -33,9 +33,19 @@ scene.add(ambientLight);
 const axesHelper = new th.AxesHelper( 50 );
 scene.add( axesHelper );
 
-const forest = await generateForest(100, 24, true);
-forest.position.set(320,58,200);
-scene.add(forest);
+// Árboles
+const forest_1 = await generateForest(60, 8);
+forest_1.position.set(400,58,200);
+scene.add(forest_1);
+const forest_2 = await generateForest(100, 14);
+forest_2.position.set(400,58,-100);
+scene.add(forest_2);
+const forest_3 = await generateForest(100, 12);
+forest_3.position.set(100,58,400);
+scene.add(forest_3);
+const forest_4 = await generateForest(80, 12);
+forest_4.position.set(-400,58,-100);
+scene.add(forest_4);
 
 
 // Render Loop
