@@ -2,6 +2,7 @@ import * as th from 'three';
 import { generateTerrain, generateWater } from './terrain';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { generateForest } from './tree';
+import { generateRails } from './rails';
 
 const CAMERA_STARTING_POSITION = new th.Vector3(200,200,400);
 
@@ -46,6 +47,10 @@ scene.add(forest_3);
 const forest_4 = await generateForest(80, 12);
 forest_4.position.set(-400,58,-100);
 scene.add(forest_4);
+
+const rails = new generateRails();
+rails.position.set(0,56,0);
+scene.add(rails);
 
 
 // Render Loop

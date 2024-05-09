@@ -19,7 +19,7 @@ export async function generateTerrain(size=1024, segments=512, scale = 256) {
 
     let displacement, grass = undefined;
     
-    await Promise.all(getTextures(['textures/heightmap.png', 'textures/grass.png']))
+    await Promise.all(getTextures(['textures/heightmap_.png', 'textures/grass.png']))
     .then( textures => {
         displacement = textures[0];
         grass = textures[1];
