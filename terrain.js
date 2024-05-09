@@ -14,6 +14,13 @@ function getTextures(textures) {
     });
 }
 
+/**
+ * Genera el terreno con su forma según el heightmap
+ * @param {number} size         Tamaño del terreno (lado del cuadrado)
+ * @param {number} segments     Segmentos tomados del heightmap
+ * @param {number} scale        Escala de variación de altura según heightmap
+ * @returns {Promise<Object3D>} Promise del objeto terreno
+ */
 export async function generateTerrain(size=1024, segments=512, scale = 256) {
     const groundGeo = new th.PlaneGeometry(size, size, segments, segments);
 
@@ -38,6 +45,13 @@ export async function generateTerrain(size=1024, segments=512, scale = 256) {
     return groundMesh;
 }
 
+/**
+ * Genera un plano de agua a un nivel indicado
+ * @param {number} waterLevel   altura del nivel del agua
+ * @param {string} color        color del material
+ * @param {number} size         tamaño del plano
+ * @returns {Promise<Object3D>} Promise del objeto agua
+ */
 export async function generateWater(waterLevel = 1, color = '#1b145c', size=1024) {
     const waterGeo = new th.PlaneGeometry(size, size);
 

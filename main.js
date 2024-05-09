@@ -30,10 +30,6 @@ directionaLight.position.set(1000,1000,1000);
 scene.add(directionaLight);
 scene.add(ambientLight);
 
-// TODO: borrar helpers
-const axesHelper = new th.AxesHelper( 50 );
-scene.add( axesHelper );
-
 // Árboles
 const forest_1 = await generateForest(60, 8);
 forest_1.position.set(400,58,200);
@@ -51,6 +47,7 @@ const forest_5 = await generateForest(80, 12);
 forest_5.position.set(-150,58,80);
 scene.add(forest_5);
 
+// Vías
 const rails = new generateRails();
 rails.position.set(0,56,0);
 scene.add(rails);

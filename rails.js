@@ -1,5 +1,5 @@
 import * as th from 'three';
-import { railPath } from './path';
+import { getRailPath } from './path';
 
 const TERRAPLEN_WIDTH = 18;
 const TERRAPLEN_HEIGHT = 3;
@@ -39,13 +39,17 @@ railShape_r.lineTo(-TERRAPLEN_HEIGHT, (INNER_RAIL_GAP/2));
 const extrudeSettings = { 
 	bevelEnabled: false,
 	steps: 500,
-    extrudePath: railPath
+    extrudePath: getRailPath()
 };
 
 const terraplenGeometry = new th.ExtrudeGeometry( terraplenShape, extrudeSettings );
 const railLGeometry = new th.ExtrudeGeometry( railShape_l, extrudeSettings);
 const railRGeometry = new th.ExtrudeGeometry( railShape_r, extrudeSettings);
 
+/**
+ * Genera el recorrido por donde pasa el tren, con terraplen y vías
+ * @returns {Group}     el grupo que contiene al terraplen y las vías
+ */
 export function generateRails() {
     const group = new th.Group();
     const terraplen = new th.Mesh( terraplenGeometry, terraplenMaterial );

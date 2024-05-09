@@ -1,5 +1,6 @@
 import * as th from 'three';
 
+// Cada 4 puntos se define una curva cúbica de Bezier (inicio-pc1-pc2-fin)
 const bezierPathPoints = [
     new th.Vector3(200,0,150),
     new th.Vector3(340,0,150),
@@ -67,7 +68,7 @@ const bezierPathPoints = [
     new th.Vector3(200,0,150),
 ];
 
-export const railPath = new th.CurvePath();
+const railPath = new th.CurvePath();
 
 for (let i = 0; i< bezierPathPoints.length / 4; i++) {
     const curve = new th.CubicBezierCurve3(
@@ -77,4 +78,12 @@ for (let i = 0; i< bezierPathPoints.length / 4; i++) {
         bezierPathPoints[4*i+3],
     )
     railPath.add(curve);
+}
+
+/**
+ * Devuelve el conjunto de curvas de Bezier que indican el camino del tren
+ * @returns {CurvePath} 
+ */
+export function getRailPath() {
+    return railPath;
 }
