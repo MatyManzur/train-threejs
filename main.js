@@ -25,7 +25,7 @@ scene.add(water);
 
 // Iluminación
 const ambientLight = new th.AmbientLight('#ffffff', 1);
-const directionaLight = new th.DirectionalLight('#ffffff', 1);
+const directionaLight = new th.DirectionalLight('#ffffff', 2);
 directionaLight.position.set(1000,1000,1000);
 scene.add(directionaLight);
 scene.add(ambientLight);
@@ -38,7 +38,7 @@ scene.add( axesHelper );
 const forest_1 = await generateForest(60, 8);
 forest_1.position.set(400,58,200);
 scene.add(forest_1);
-const forest_2 = await generateForest(100, 14);
+const forest_2 = await generateForest(90, 14);
 forest_2.position.set(400,58,-100);
 scene.add(forest_2);
 const forest_3 = await generateForest(100, 12);
@@ -47,6 +47,9 @@ scene.add(forest_3);
 const forest_4 = await generateForest(80, 12);
 forest_4.position.set(-400,58,-100);
 scene.add(forest_4);
+const forest_5 = await generateForest(80, 12);
+forest_5.position.set(-150,58,80);
+scene.add(forest_5);
 
 const rails = new generateRails();
 rails.position.set(0,56,0);
