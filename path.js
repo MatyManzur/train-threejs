@@ -43,17 +43,12 @@ const bezierPathPoints = [
     new th.Vector3(-230,0,0),
 
     new th.Vector3(-230,0,0),
-    new th.Vector3(-230,0,40),
-    new th.Vector3(-230,0,35),
-    new th.Vector3(-250,0,40),
-
-    new th.Vector3(-250,0,40),
-    new th.Vector3(-260,0,45),
-    new th.Vector3(-280,0,25),
+    new th.Vector3(-230,0,50),
+    new th.Vector3(-280,0,50),
     new th.Vector3(-280,0,100),
 
     new th.Vector3(-280,0,100),
-    new th.Vector3(-260,0,175),
+    new th.Vector3(-280,0,175),
     new th.Vector3(-240,0,180),
     new th.Vector3(-150,0,180),
 
@@ -86,4 +81,28 @@ for (let i = 0; i< bezierPathPoints.length / 4; i++) {
  */
 export function getRailPath() {
     return railPath;
+}
+
+const pathLength = railPath.getLength();
+
+/**
+ * Devuelve el punto que corresponde a la distancia indicada recorrida sobre la curva
+ * @param {number} distanceFromStart    distancia desde el comienzo
+ * @returns {Vector3}                   punto
+ */
+export function getPointAt(distanceFromStart) {
+    let position = distanceFromStart / pathLength;
+    position = position - Math.floor(position);
+    return railPath.getPoint(position);
+}
+
+/**
+ * Devuelve el vector tangente al punto que corresponde a la distancia indicada recorrida sobre la curva
+ * @param {*} distanceFromStart         distancia desde el comienzo
+ * @returns {Vector3}                   vector tangente al punto
+ */
+export function getTangentAt(distanceFromStart) {
+    let position = distanceFromStart / pathLength;
+    position = position - Math.floor(position);
+    return railPath.getTangent(position);
 }

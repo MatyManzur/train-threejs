@@ -3,18 +3,21 @@ import { generateTerrain, generateWater } from './terrain';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { generateForest } from './tree';
 import { generateRails } from './rails';
+import { animateTrain, generateTrain } from './train';
 
-const CAMERA_STARTING_POSITION = new th.Vector3(200,200,400);
+const CAMERA_STARTING_POSITION = new th.Vector3(320,70,200);
+const CAMERA_STARTING_LOOK_AT = new th.Vector3(0,0,0);
 
 // Scene setup
 const scene = new th.Scene();
 const camera = new th.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
 camera.position.set(...CAMERA_STARTING_POSITION);
-camera.lookAt(scene.position);
+camera.lookAt(CAMERA_STARTING_LOOK_AT);
 const renderer = new th.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
+controls.target = CAMERA_STARTING_LOOK_AT;
 controls.update();
 
 // Terreno y Lago
@@ -52,12 +55,17 @@ const rails = new generateRails();
 rails.position.set(0,56,0);
 scene.add(rails);
 
+// Tren
+const train = new generateTrain();
+scene.add(train);
+
 
 // Render Loop
 function animate() {
     requestAnimationFrame(animate);
 
     //...animations...
+    animateTrain(50, 64.7);
     controls.update();
 
     renderer.render(scene, camera);
