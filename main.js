@@ -4,6 +4,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { generateForest } from './tree';
 import { generateRails } from './rails';
 import { animateTrain, generateTrain } from './train';
+import { generateBridge, generateTunnel } from './structures';
 
 const CAMERA_STARTING_POSITION = new th.Vector3(320,70,200);
 const CAMERA_STARTING_LOOK_AT = new th.Vector3(0,0,0);
@@ -51,13 +52,24 @@ forest_5.position.set(-150,58,80);
 scene.add(forest_5);
 
 // Vías
-const rails = new generateRails();
+const rails = generateRails();
 rails.position.set(0,56,0);
 scene.add(rails);
 
 // Tren
-const train = new generateTrain();
+const train = generateTrain();
 scene.add(train);
+
+// Túnel
+const tunnel = generateTunnel();
+tunnel.rotateY(Math.PI/2);
+tunnel.position.set(-60, 55, -360);
+scene.add(tunnel);
+
+// Puente
+const bridge = generateBridge(80, 20, 40, 20, 5);
+bridge.position.set(100,56,150);
+scene.add(bridge);
 
 
 // Render Loop
