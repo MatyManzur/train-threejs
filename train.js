@@ -1,6 +1,7 @@
 import * as th from 'three';
 import { getPointAt, getRailPath, getTangentAt } from './path';
 import { offLightMaterial, onLightMaterial } from './lights';
+import { createCameraNumber } from './camera';
 
 
 
@@ -25,7 +26,7 @@ const trainWheelsMaterial = new th.MeshPhongMaterial({
 })
 
 const trainRodMaterial = new th.MeshPhongMaterial({
-    color: '#333333'
+    color: '#b1b1b1'
 })
 
 const trainPistonMaterial = new th.MeshPhongMaterial({
@@ -138,6 +139,36 @@ train.add(trainBase);
 const trainCabin = new th.Group();
 trainCabin.position.set(0,-TRAIN_BARREL_DIAMETER/2+TRAIN_CABIN_FLOOR_WIDTH/2,-TRAIN_BARREL_LENGTH/2);
 train.add(trainCabin);
+
+const trainForwardCamera = new th.Object3D();
+trainForwardCamera.position.set(0,TRAIN_CABIN_HEIGHT*0.7, -TRAIN_CABIN_LENGTH*0.7);
+trainCabin.add(trainForwardCamera);
+
+const trainForwardCameraTarget = new th.Object3D();
+trainForwardCameraTarget.position.set(0,0,2*TRAIN_BARREL_LENGTH);
+trainForwardCamera.add(trainForwardCameraTarget);
+
+createCameraNumber(1, trainForwardCamera, trainForwardCameraTarget, 'attached');
+
+const trainBackwardCamera = new th.Object3D();
+trainBackwardCamera.position.set(0,TRAIN_CABIN_HEIGHT*0.7, TRAIN_CABIN_LENGTH*0.7);
+trainCabin.add(trainBackwardCamera);
+
+const trainBackwardCameraTarget = new th.Object3D();
+trainBackwardCameraTarget.position.set(0,0,-10);
+trainBackwardCamera.add(trainBackwardCameraTarget);
+
+createCameraNumber(2, trainBackwardCamera, trainBackwardCameraTarget, 'attached');
+
+const trainSideCamera = new th.Object3D();
+trainSideCamera.position.set(-3*TRAIN_BARREL_DIAMETER,TRAIN_CABIN_HEIGHT, TRAIN_BARREL_LENGTH*2);
+trainCabin.add(trainSideCamera);
+
+const trainSideCameraTarget = new th.Object3D();
+trainSideCameraTarget.position.set(2*TRAIN_BARREL_DIAMETER,-TRAIN_BARREL_DIAMETER/2,-TRAIN_BARREL_LENGTH);
+trainSideCamera.add(trainSideCameraTarget);
+
+createCameraNumber(3, trainSideCamera, trainSideCameraTarget, 'attached');
 
 const cabinLateralPanelShape = new th.Shape();
 cabinLateralPanelShape.moveTo(0,0);

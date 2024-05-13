@@ -1,28 +1,28 @@
 import * as th from 'three';
 import { generateTerrain, generateWater } from './terrain';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { generateForest } from './tree';
 import { generateRails } from './rails';
 import { animateTrain, generateTrain, toggleTrainLight } from './train';
 import { generateBridge, generateTunnel } from './structures';
 import { setupNaturalLights, setSunPosition, generateLampPost, toggleLampPostsLight } from './lights';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+import { createCameraNumber, initCameras, setCameraNumber, updateCamera } from './camera';
 
-
-const CAMERA_STARTING_POSITION = new th.Vector3(320,70,200);
-const CAMERA_STARTING_LOOK_AT = new th.Vector3(0,60,0);
+const BASE_WATER_LEVEL = 42;
 
 // Scene setup
 const scene = new th.Scene();
 const camera = new th.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
-camera.position.set(...CAMERA_STARTING_POSITION);
-camera.lookAt(CAMERA_STARTING_LOOK_AT);
+
 const renderer = new th.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.target = CAMERA_STARTING_LOOK_AT;
-controls.update();
+
+window.addEventListener("resize", () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
 
 // Terreno y Lago
 const terrain = await generateTerrain();
@@ -74,12 +74,40 @@ tunnel.rotateY(Math.PI/2);
 tunnel.position.set(-60, 55, -360);
 scene.add(tunnel);
 
+const tunnelCamera = new th.Object3D();
+tunnel.add(tunnelCamera);
+tunnelCamera.position.set(5,30,-10);
+const tunnelCameraTarget = new th.Object3D();
+tunnelCameraTarget.position.set(-2.5,-3,10);
+tunnelCamera.add(tunnelCameraTarget);
+createCameraNumber(4, tunnelCamera, tunnelCameraTarget, 'fix');
+
 // Puente
 const bridge = generateBridge(80, 20, 40, 20, 5);
 bridge.position.set(100,56,150);
 scene.add(bridge);
 
+const bridgeCamera = new th.Object3D();
+bridge.add(bridgeCamera);
+bridgeCamera.position.set(5,30,-10);
+const bridgeCameraTarget = new th.Object3D();
+bridgeCameraTarget.position.set(-2.5,-3,10);
+bridgeCamera.add(bridgeCameraTarget);
+createCameraNumber(5, bridgeCamera, bridgeCameraTarget, 'fix');
 
+// Camaras
+const camera_names = [  'Orbital', 'Locomotora Frontal', 'Locomotora Trasera', 'Locomotora', 
+                        'Tunel', 'Puente', 'Espectador'];
+let selected_camera = 0;
+initCameras(camera, renderer);
+const defaultCamera = new th.Object3D();
+defaultCamera.position.set(300,100,300);
+scene.add(defaultCamera);
+const defaultCameraTarget = new th.Object3D();
+defaultCameraTarget.position.set(0,60,0);
+scene.add(defaultCameraTarget);
+createCameraNumber(0, defaultCamera, defaultCameraTarget, 'orbital');
+setCameraNumber(0, camera, renderer);
 
 // GUI
 const guiControls = {
@@ -87,6 +115,8 @@ const guiControls = {
     luz_de_faroles: true,
     velocidad_del_tren: 10,
     velocidad_del_dia: 1,
+    nivel_del_agua: 0,
+    camara: 'Orbital'
 }
 
 let timeOfDay = 0;
@@ -94,13 +124,61 @@ let timeOfDay = 0;
 function guiChanged() {
     toggleTrainLight(guiControls.luz_del_tren);
     toggleLampPostsLight(guiControls.luz_de_faroles);
+    water.position.setY(BASE_WATER_LEVEL+guiControls.nivel_del_agua);
+    if(guiControls.camara !== camera_names[selected_camera]) {
+        selected_camera = camera_names.indexOf(guiControls.camara);
+        setCameraNumber(selected_camera, camera, renderer);
+    }
 }
+
 const gui = new GUI();
-gui.add(guiControls, 'luz_del_tren').onChange(guiChanged);
-gui.add(guiControls, 'luz_de_faroles').onChange(guiChanged);
-gui.add(guiControls, 'velocidad_del_tren', -100, 100, 5);
-gui.add(guiControls, 'velocidad_del_dia', -5, 5, 0.25);
+gui.add(guiControls, 'luz_del_tren').listen().onChange(guiChanged);
+gui.add(guiControls, 'luz_de_faroles').listen().onChange(guiChanged);
+gui.add(guiControls, 'velocidad_del_tren', -100, 100, 5).listen();
+gui.add(guiControls, 'velocidad_del_dia', -5, 5, 0.25).listen();
+gui.add(guiControls, 'nivel_del_agua', -40, 15, 1).onChange(guiChanged);
+gui.add(guiControls, 'camara', camera_names).listen().onChange(guiChanged);
+
 guiChanged();
+
+// Keyboard
+function setupKeyControls() {
+    document.onkeydown = (event) => {
+        switch(event.key) {
+            case "t":
+                guiControls.luz_del_tren = !guiControls.luz_del_tren;
+                guiChanged();
+                break;
+            case "l":
+                guiControls.luz_de_faroles = !guiControls.luz_de_faroles;
+                guiChanged();
+                break;
+            case "z":
+                guiControls.velocidad_del_tren -= 5;
+                guiChanged();
+                break;
+            case "x":
+                guiControls.velocidad_del_tren += 5;
+                guiChanged();
+                break;
+            case "j":
+                guiControls.velocidad_del_dia -= 0.25;
+                guiChanged();
+                break;
+            case "k":
+                guiControls.velocidad_del_dia += 0.25;
+                guiChanged();
+                break;
+            case "1": case "2": case "3": case "4": case "5": case "6": case "7":
+                const selected = parseInt(event.key)-1;
+                guiControls.camara = camera_names[selected];
+                guiChanged();
+                break;      
+        }
+    }
+}
+
+setupKeyControls();
 
 // Render Loop
 function animate() {
@@ -109,8 +187,8 @@ function animate() {
     //...animations...
     timeOfDay += guiControls.velocidad_del_dia*0.1;
     setSunPosition(timeOfDay);
-    animateTrain(guiControls.velocidad_del_tren, 64.7);
-    controls.update();
+    animateTrain(guiControls.velocidad_del_tren, 64.7);21
+    updateCamera(camera);
 
     renderer.render(scene, camera);
 }
