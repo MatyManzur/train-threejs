@@ -24,12 +24,13 @@ function getTextures(textures) {
 export async function generateTerrain(size=1024, segments=512, scale = 256) {
     const groundGeo = new th.PlaneGeometry(size, size, segments, segments);
 
-    let displacement, grass = undefined;
+    let displacement, grass, normal = undefined;
     
-    await Promise.all(getTextures(['textures/heightmap_.png', 'textures/grass.png']))
+    await Promise.all(getTextures(['textures/heightmap.png', 'textures/grass.png', 'textures/normalmap.png']))
     .then( textures => {
         displacement = textures[0];
         grass = textures[1];
+        normal = textures[2];
         grass.wrapS = grass.wrapT = th.RepeatWrapping;
         grass.repeat.set(16,16);
     })
@@ -37,6 +38,7 @@ export async function generateTerrain(size=1024, segments=512, scale = 256) {
     const groundMat = new th.MeshPhongMaterial ({
         map: grass,
         displacementMap: displacement,
+        normalMap: normal,
         displacementScale: scale,
     });
 
