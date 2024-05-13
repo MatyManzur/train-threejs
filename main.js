@@ -5,6 +5,8 @@ import { generateForest } from './tree';
 import { generateRails } from './rails';
 import { animateTrain, generateTrain } from './train';
 import { generateBridge, generateTunnel } from './structures';
+import { setupNaturalLights, setSunPosition } from './lights';
+
 
 const CAMERA_STARTING_POSITION = new th.Vector3(320,70,200);
 const CAMERA_STARTING_LOOK_AT = new th.Vector3(0,0,0);
@@ -28,11 +30,7 @@ const water = await generateWater(42);
 scene.add(water);
 
 // Iluminación
-const ambientLight = new th.AmbientLight('#ffffff', 1);
-const directionaLight = new th.DirectionalLight('#ffffff', 2);
-directionaLight.position.set(1000,1000,1000);
-scene.add(directionaLight);
-scene.add(ambientLight);
+setupNaturalLights(renderer, scene);
 
 // Árboles
 const forest_1 = await generateForest(60, 8);
@@ -71,10 +69,15 @@ const bridge = generateBridge(80, 20, 40, 20, 5);
 bridge.position.set(100,56,150);
 scene.add(bridge);
 
+let timeOfDay = 0;
+let daySpeed = 0.2;
 
 // Render Loop
 function animate() {
     requestAnimationFrame(animate);
+
+    timeOfDay += daySpeed;
+    setSunPosition(timeOfDay);
 
     //...animations...
     animateTrain(50, 64.7);
