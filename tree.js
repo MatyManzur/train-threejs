@@ -2,10 +2,16 @@ import * as th from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 const treeTrunkMaterial = new th.MeshPhongMaterial(
-    {color: '#3d2116',}
+    {   
+        color: '#3d2116',
+        shininess: 0
+    }
 )
 const treeLeavesMaterial = new th.MeshPhongMaterial(
-    {color: '#669739',}
+    {
+        color: '#669739',
+        shininess: 10,
+    }
 )
 
 function getTreeModel(model) {

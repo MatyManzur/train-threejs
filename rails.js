@@ -9,10 +9,17 @@ const RAIL_HEIGHT = 1;
 const INNER_RAIL_GAP = 4;
 
 const terraplenMaterial = new th.MeshPhongMaterial(
-    {color: '#775d54',}
+    {
+        color: '#775d54',
+        shininess: 0,
+    }
 )
 const railMaterial = new th.MeshPhongMaterial(
-    {color: '#dbdbdb',}
+    {
+        color: '#949494',
+        shininess: 100,
+        specular: '#cacacaff'
+    }
 )
 
 const terraplenShape = new th.Shape();

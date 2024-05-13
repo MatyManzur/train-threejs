@@ -14,6 +14,11 @@ let initialized = false;
 const cameras = {};
 let selectedCamera = 0;
 
+/**
+ * Inicializa las camaras de la escena
+ * @param {Camera} camera 
+ * @param {Renderer} renderer 
+ */
 export function initCameras(camera, renderer) {
     orbitControls = new OrbitControls(camera, renderer.domElement);
     orbitControls.update();
@@ -23,6 +28,13 @@ export function initCameras(camera, renderer) {
     initialized = true;
 }
 
+/**
+ * Registra una nueva camara
+ * @param {number} number                                           número de cámara
+ * @param {Object3D} positionObject                                 objeto con la posición de la cámara
+ * @param {Object3D} targetObject                                   objeto al que mira la cámara
+ * @param {'fix'|'attached'|'firstPerson'|'orbital'} controls       tipo de control de la cámara
+ */
 export function createCameraNumber(number, positionObject, targetObject, controls='fix') {
     cameras[number] = {
         position: positionObject,
@@ -31,6 +43,11 @@ export function createCameraNumber(number, positionObject, targetObject, control
     }
 }
 
+/**
+ * Establece la cámara actual
+ * @param {number} number   número de cámara
+ * @param {Camera} camera   objeto cámara
+ */
 export function setCameraNumber(number, camera) {
     selectedCamera = number;
     if (!(number in cameras)) {
@@ -64,6 +81,10 @@ function changeControlsTo(controls) {
     }
 }
 
+/**
+ * Actualiza la posición, rotación de la cámara y sus controles según la cámara seleccionada
+ * @param {Camera} camera    objeto cámara
+ */
 export function updateCamera(camera) {
     if (!initialized) {
         return;

@@ -2,7 +2,10 @@ import * as th from 'three';
 import { Sky } from 'three/addons/objects/Sky.js';
 
 export const offLightMaterial = new th.MeshPhongMaterial({
-    color: '#668186'
+    color: '#668186',
+    transparent: true,
+    opacity: 0.80,
+    shininess: 100,
 });
 
 export const onLightMaterial = new th.MeshPhongMaterial({
@@ -11,12 +14,16 @@ export const onLightMaterial = new th.MeshPhongMaterial({
 });
 
 const lampMaterial = new th.MeshPhongMaterial({
-    color: '#b6b6b6'
-})
+    color: '#b6b6b6',
+    shininess: 100,
+    specular: '#ffffff',
+});
 
 const lampDetailMaterial = new th.MeshPhongMaterial({
-    color: '#797979'
-})
+    color: '#797979',
+    shininess: 20,
+    specular: '#ffffff',
+});
 
 const sunLightColorGradient = [ '#2f0f00', '#752901', '#b24502', '#e76104', '#fa8120', 
                         '#fa9d48', '#fbb46a', '#fbc687', '#fcd59f', '#fde0b2', 

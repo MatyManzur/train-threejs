@@ -1,15 +1,19 @@
 import * as th from 'three';
 
 const tunnelMaterial = new th.MeshPhongMaterial({
-    color: '#573824'
+    color: '#573824',
+    shininess: 0,
 });
 
 const bridgeArcMaterial = new th.MeshPhongMaterial({
-    color: '#e46647'
+    color: '#e46647',
+    shininess: 10,
 });
 
 const topStructureMaterial = new th.MeshPhongMaterial({
-    color: '#777777'
+    color: '#777777',
+    shininess: 100,
+    specular: '#a3a3a3'
 })
 
 const TUNNEL_WIDTH = 35;

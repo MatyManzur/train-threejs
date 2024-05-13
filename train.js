@@ -1,39 +1,43 @@
 import * as th from 'three';
-import { getPointAt, getRailPath, getTangentAt } from './path';
+import { getPointAt, getTangentAt } from './path';
 import { offLightMaterial, onLightMaterial } from './lights';
 import { createCameraNumber } from './camera';
 
 
-
 const trainBodyMaterial = new th.MeshPhongMaterial({
-    color: '#ff6600'
+    color: '#ff6600',
+    shininess: 50,
 });
 
 const trainSmokeStackMaterial = new th.MeshPhongMaterial({
-    color: '#ff7b00'
+    color: '#ff7b00',
+    shininess: 50
 });
 
 const trainRoofMaterial = new th.MeshPhongMaterial({
-    color: '#f0e87d'
-})
+    color: '#f0e87d',
+    shininess: 10
+});
 
 const trainMotorMaterial = new th.MeshPhongMaterial({
-    color: '#7c7c7c'
-})
+    color: '#7c7c7c',
+    shininess: 100
+});
 
 const trainWheelsMaterial = new th.MeshPhongMaterial({
-    color: '#000000'
-})
+    color: '#000000',
+    shininess: 80
+});
 
 const trainRodMaterial = new th.MeshPhongMaterial({
-    color: '#b1b1b1'
-})
+    color: '#b1b1b1',
+    shininess: 100
+});
 
 const trainPistonMaterial = new th.MeshPhongMaterial({
-    color: '#310000'
-})
-
-const TRAIN_PATH_SEGMENTS = 2048;
+    color: '#310000',
+    shininess: 80
+});
 
 const TRAIN_BARREL_DIAMETER = 5;
 const TRAIN_BARREL_LENGTH = 12;
@@ -327,9 +331,6 @@ export function generateTrain() {
 
 let lastTick = Date.now();
 let lastDistance = 0;
-
-// const helper = new th.AxesHelper(20);
-// train.add(helper);
 
 /**
  * Realiza las animaciones correspondientes para la velocidad del tren indicada. 
