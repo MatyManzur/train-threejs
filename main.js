@@ -78,7 +78,7 @@ const tunnelCamera = new th.Object3D();
 tunnel.add(tunnelCamera);
 tunnelCamera.position.set(5,30,-10);
 const tunnelCameraTarget = new th.Object3D();
-tunnelCameraTarget.position.set(-2.5,-3,10);
+tunnelCameraTarget.position.set(-2,-2,10);
 tunnelCamera.add(tunnelCameraTarget);
 createCameraNumber(4, tunnelCamera, tunnelCameraTarget, 'fix');
 
@@ -89,9 +89,9 @@ scene.add(bridge);
 
 const bridgeCamera = new th.Object3D();
 bridge.add(bridgeCamera);
-bridgeCamera.position.set(5,30,-10);
+bridgeCamera.position.set(-10,15,-15);
 const bridgeCameraTarget = new th.Object3D();
-bridgeCameraTarget.position.set(-2.5,-3,10);
+bridgeCameraTarget.position.set(10,-2,4);
 bridgeCamera.add(bridgeCameraTarget);
 createCameraNumber(5, bridgeCamera, bridgeCameraTarget, 'fix');
 
@@ -108,6 +108,13 @@ defaultCameraTarget.position.set(0,60,0);
 scene.add(defaultCameraTarget);
 createCameraNumber(0, defaultCamera, defaultCameraTarget, 'orbital');
 setCameraNumber(0, camera, renderer);
+const spectatorCamera = new th.Object3D();
+spectatorCamera.position.set(200,65,200);
+scene.add(spectatorCamera);
+const spectatorCameraTarget = new th.Object3D();
+spectatorCameraTarget.position.set(-100,0,-100);
+spectatorCamera.add(spectatorCameraTarget);
+createCameraNumber(6, spectatorCamera, spectatorCameraTarget, 'firstPerson');
 
 // GUI
 const guiControls = {
