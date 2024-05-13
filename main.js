@@ -3,13 +3,14 @@ import { generateTerrain, generateWater } from './terrain';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { generateForest } from './tree';
 import { generateRails } from './rails';
-import { animateTrain, generateTrain } from './train';
+import { animateTrain, generateTrain, toggleTrainLight } from './train';
 import { generateBridge, generateTunnel } from './structures';
-import { setupNaturalLights, setSunPosition } from './lights';
+import { setupNaturalLights, setSunPosition, generateLampPost, toggleLampPostsLight } from './lights';
+import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 
 
 const CAMERA_STARTING_POSITION = new th.Vector3(320,70,200);
-const CAMERA_STARTING_LOOK_AT = new th.Vector3(0,0,0);
+const CAMERA_STARTING_LOOK_AT = new th.Vector3(0,60,0);
 
 // Scene setup
 const scene = new th.Scene();
@@ -31,6 +32,15 @@ scene.add(water);
 
 // Iluminación
 setupNaturalLights(renderer, scene);
+const lampPositions = [ new th.Vector3(218,0,165),new th.Vector3(286,0,39),new th.Vector3(314,0,-171),
+                        new th.Vector3(191,0,-281),new th.Vector3(74,0,-340),new th.Vector3(-75,0,-376),
+                        new th.Vector3(-245,0,-154),new th.Vector3(-265,0,88),new th.Vector3(-71,0,174),
+                        new th.Vector3(76,0,136)];
+lampPositions.forEach((position) => {
+    const lamp = generateLampPost();
+    lamp.position.set(position.x, 56.5, position.z);
+    scene.add(lamp);
+});
 
 // Árboles
 const forest_1 = await generateForest(60, 8);
@@ -69,18 +79,37 @@ const bridge = generateBridge(80, 20, 40, 20, 5);
 bridge.position.set(100,56,150);
 scene.add(bridge);
 
+
+
+// GUI
+const guiControls = {
+    luz_del_tren: true,
+    luz_de_faroles: true,
+    velocidad_del_tren: 10,
+    velocidad_del_dia: 1,
+}
+
 let timeOfDay = 0;
-let daySpeed = 0.2;
+
+function guiChanged() {
+    toggleTrainLight(guiControls.luz_del_tren);
+    toggleLampPostsLight(guiControls.luz_de_faroles);
+}
+const gui = new GUI();
+gui.add(guiControls, 'luz_del_tren').onChange(guiChanged);
+gui.add(guiControls, 'luz_de_faroles').onChange(guiChanged);
+gui.add(guiControls, 'velocidad_del_tren', -100, 100, 5);
+gui.add(guiControls, 'velocidad_del_dia', -5, 5, 0.25);
+guiChanged();
 
 // Render Loop
 function animate() {
     requestAnimationFrame(animate);
 
-    timeOfDay += daySpeed;
-    setSunPosition(timeOfDay);
-
     //...animations...
-    animateTrain(50, 64.7);
+    timeOfDay += guiControls.velocidad_del_dia*0.1;
+    setSunPosition(timeOfDay);
+    animateTrain(guiControls.velocidad_del_tren, 64.7);
     controls.update();
 
     renderer.render(scene, camera);

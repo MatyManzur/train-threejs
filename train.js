@@ -85,10 +85,17 @@ trainBodyBarrel.add(trainFrontCircle);
 
 const trainFrontLight = new th.Mesh(
     new th.SphereGeometry(TRAIN_LIGHT_SIZE),
-    offLightMaterial,
+    onLightMaterial,
 )
 trainFrontLight.position.set(0,TRAIN_FRONT_WIDTH/4,0);
 trainFrontCircle.add(trainFrontLight);
+
+const trainLight = new th.SpotLight(0xffffff, 100, 0, undefined, 0, 1);
+const lightTarget = new th.Object3D();
+lightTarget.position.setY(2);
+trainFrontLight.add(lightTarget);
+trainLight.target = lightTarget;
+trainFrontLight.add(trainLight);
 
 const trainSmokeStack = new th.Mesh(
     new th.CylinderGeometry(TRAIN_FRONT_WIDTH*0.4, TRAIN_FRONT_WIDTH*0.4, SMOKE_STACK_HEIGHT),
@@ -314,6 +321,21 @@ export function animateTrain(trainSpeed, height) {
     lastTick = currentTick;
     lastDistance = currentDistance;
     currentTangent;
+}
+
+/**
+ * Prende o apaga la luz frontal del tren
+ * @param {boolean} lightOn     true = prender; false = apagar
+ */
+export function toggleTrainLight(lightOn) {
+    if(lightOn) {
+        trainLight.intensity = 100;
+        trainFrontLight.material = onLightMaterial;
+    }
+    else {
+        trainLight.intensity = 0;
+        trainFrontLight.material = offLightMaterial;
+    }
 }
 
 
