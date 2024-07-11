@@ -45,6 +45,7 @@ export async function generateTerrain(size=1024, segments=512, scale = 256) {
 
     let groundMesh = new th.Mesh(groundGeo, groundMat);
     groundMesh.rotation.x = -Math.PI / 2;
+    groundMesh.receiveShadow = true;
     return groundMesh;
 }
 

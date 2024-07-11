@@ -25,6 +25,8 @@ const lampDetailMaterial = new th.MeshPhongMaterial({
     specular: '#ffffff',
 });
 
+const SHADOW_RESOLUTION = 4096;
+
 const sunLightColorGradient = [ '#2f0f00', '#752901', '#b24502', '#e76104', '#fa8120', 
                         '#fa9d48', '#fbb46a', '#fbc687', '#fcd59f', '#fde0b2', 
                         '#fde8c2', '#fdefcf', '#fef4da', '#fef7e2', '#fef9e8',
@@ -32,7 +34,7 @@ const sunLightColorGradient = [ '#2f0f00', '#752901', '#b24502', '#e76104', '#fa
 const MAX_ANGLE = 100;
 const angleSteps = MAX_ANGLE / sunLightColorGradient.length;
 
-const SUN_AZIMUTH = 270;
+const SUN_AZIMUTH = 235;
 const AMBIENT_LIGHT_INTENSITY = 2;
 const DIRECTIONAL_LIGHT_INTENSITY = 6;
 
@@ -67,6 +69,15 @@ export function setupNaturalLights(renderer, scene) {
 
     ambientLight = new th.AmbientLight('#c0bbff', AMBIENT_LIGHT_INTENSITY);
     directionaLight = new th.DirectionalLight('#ffffff', DIRECTIONAL_LIGHT_INTENSITY);
+    directionaLight.castShadow = true;
+    directionaLight.shadow.mapSize.width = SHADOW_RESOLUTION;
+    directionaLight.shadow.mapSize.height = SHADOW_RESOLUTION;
+    directionaLight.shadow.camera.near = 400;
+    directionaLight.shadow.camera.far = 1600;
+    directionaLight.shadow.camera.top = 500;
+    directionaLight.shadow.camera.bottom = -500;
+    directionaLight.shadow.camera.left = 600;
+    directionaLight.shadow.camera.right = -600;
     scene.add(directionaLight);
     scene.add(ambientLight);
     setSunPosition(0);
@@ -132,10 +143,16 @@ export function generateLampPost(height=18) {
     lamp.add(top);
 
     const pointLight = new th.PointLight(0xffffff, LAMP_POST_INTENSITY, 0, 1);
+    //pointLight.castShadow = true; // se laguea bastante
     light.add(pointLight);
 
     lampPostLights.push(light);
 
+    lamp.traverse((child) => {
+        if(child.isMesh) {
+            child.castShadow = true;
+        }
+    })
     return lamp;
 }
 
@@ -156,4 +173,12 @@ export function toggleLampPostsLight(lightOn) {
             light.material = offLightMaterial;
         });
     }
+}
+
+/**
+ * Activa o desactiva las sombras causadas por el sol
+ * @param {boolean} shadows     si el sol castea sombras
+ */
+export function toggleSunShadows(shadows) {
+    directionaLight.castShadow = shadows;
 }

@@ -20,8 +20,6 @@ function getTreeModel(model) {
         loader.load(model, (object) => {
             object.scene.traverse((child) => {
                 if (child.isMesh) {
-                    child.castShadow = true;
-                    child.receiveShadow = true; 
                     switch(child.name) {
                         case "Cylinder":
                             child.material = treeTrunkMaterial;
@@ -51,6 +49,11 @@ export async function generateTree(width = 1, height= 1.2, rotation = 0) {
     const object = await getTreeModel("./models/tree/tree.gltf");
     object.rotation.y = rotation;
     object.scale.set(width, height, width);
+    object.traverse((child) => {
+        if(child.isMesh) {
+            child.castShadow = true;
+        }
+    })
     return object;
 }
 

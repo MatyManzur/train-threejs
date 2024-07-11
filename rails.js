@@ -68,5 +68,11 @@ export function generateRails() {
     rails.add(railRight);
     group.add(rails);
     group.add(terraplen);
+    group.traverse((child) => {
+        if(child.isMesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+        }
+    })
     return group;
 }

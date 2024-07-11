@@ -95,11 +95,12 @@ const trainFrontLight = new th.Mesh(
 trainFrontLight.position.set(0,TRAIN_FRONT_WIDTH/4,0);
 trainFrontCircle.add(trainFrontLight);
 
-const trainLight = new th.SpotLight(0xffffff, 100, 0, undefined, 0, 1);
+const trainLight = new th.SpotLight(0xffffff, 200, 0, undefined, 0, 1);
 const lightTarget = new th.Object3D();
 lightTarget.position.setY(2);
 trainFrontLight.add(lightTarget);
 trainLight.target = lightTarget;
+trainLight.castShadow = true;
 trainFrontLight.add(trainLight);
 
 const trainSmokeStack = new th.Mesh(
@@ -326,6 +327,11 @@ wheelAnimations.push((rotation) => {
  * @returns {Group}     grupo que contiene al tren 
  */
 export function generateTrain() {
+    train.traverse((child) => {
+        if(child.isMesh) {
+            child.castShadow = true;
+        }
+    })
     return train;
 }
 
@@ -358,8 +364,9 @@ export function animateTrain(trainSpeed, height) {
 /**
  * Prende o apaga la luz frontal del tren
  * @param {boolean} lightOn     true = prender; false = apagar
+ * @param {boolean} shadow      si castea sombras la luz del tren
  */
-export function toggleTrainLight(lightOn) {
+export function toggleTrainLight(lightOn, shadow) {
     if(lightOn) {
         trainLight.intensity = 100;
         trainFrontLight.material = onLightMaterial;
@@ -368,6 +375,7 @@ export function toggleTrainLight(lightOn) {
         trainLight.intensity = 0;
         trainFrontLight.material = offLightMaterial;
     }
+    trainLight.castShadow = shadow;
 }
 
 

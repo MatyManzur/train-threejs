@@ -4,7 +4,7 @@ import { generateForest } from './tree';
 import { generateRails } from './rails';
 import { animateTrain, generateTrain, toggleTrainLight } from './train';
 import { generateBridge, generateTunnel } from './structures';
-import { setupNaturalLights, setSunPosition, generateLampPost, toggleLampPostsLight } from './lights';
+import { setupNaturalLights, setSunPosition, generateLampPost, toggleLampPostsLight, toggleSunShadows } from './lights';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 import { createCameraNumber, initCameras, setCameraNumber, updateCamera } from './camera';
 
@@ -17,6 +17,8 @@ const camera = new th.PerspectiveCamera(75, window.innerWidth / window.innerHeig
 const renderer = new th.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = th.PCFSoftShadowMap;
 
 window.addEventListener("resize", () => {
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -123,13 +125,15 @@ const guiControls = {
     velocidad_del_tren: 10,
     velocidad_del_dia: 1,
     nivel_del_agua: 0,
+    sombras: true,
     camara: 'Orbital'
 }
 
 let timeOfDay = 0;
 
 function guiChanged() {
-    toggleTrainLight(guiControls.luz_del_tren);
+    toggleTrainLight(guiControls.luz_del_tren, guiControls.sombras);
+    toggleSunShadows(guiControls.sombras);
     toggleLampPostsLight(guiControls.luz_de_faroles);
     water.position.setY(BASE_WATER_LEVEL+guiControls.nivel_del_agua);
     if(guiControls.camara !== camera_names[selected_camera]) {
@@ -145,6 +149,7 @@ gui.add(guiControls, 'velocidad_del_tren', -100, 100, 5).listen();
 gui.add(guiControls, 'velocidad_del_dia', -5, 5, 0.25).listen();
 gui.add(guiControls, 'nivel_del_agua', -40, 15, 1).onChange(guiChanged);
 gui.add(guiControls, 'camara', camera_names).listen().onChange(guiChanged);
+gui.add(guiControls, 'sombras').listen().onChange(guiChanged);
 
 guiChanged();
 

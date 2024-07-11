@@ -51,7 +51,14 @@ export function generateTunnel(length = TUNNEL_LENGTH, height = TUNNEL_HEIGHT, w
     }
 
     const tunnelGeometry = new th.ExtrudeGeometry(tunnelShape, tunnelExtrudeSettings);
-    return new th.Mesh(tunnelGeometry, tunnelMaterial);
+    const tunnel = new th.Mesh(tunnelGeometry, tunnelMaterial);
+    tunnel.traverse((child) => {
+        if(child.isMesh) {
+            child.castShadow = true;
+        }
+    })
+    return tunnel;
+
 }
 
 function generateArc(width, depth, height, columnWidth) {
@@ -181,6 +188,12 @@ export function generateBridge(bridgeLength, bridgeWidth, bridgeColumnsHeight, t
 
     bridge.add(columns);
     bridge.add(topStructure);
+
+    bridge.traverse((child) => {
+        if(child.isMesh) {
+            child.castShadow = true;
+        }
+    })
 
     return bridge;
 }
