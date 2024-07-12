@@ -2,40 +2,48 @@ import * as th from 'three';
 import { getPointAt, getTangentAt } from './path';
 import { offLightMaterial, onLightMaterial } from './lights';
 import { createCameraNumber } from './camera';
+import { getTexture, resetUVs } from './texture';
 
 
 const trainBodyMaterial = new th.MeshPhongMaterial({
-    color: '#ff6600',
-    shininess: 50,
+    color: '#ffb078',
+    map: getTexture('textures/metal.jpg', .1, .1),
+    shininess: 100,
 });
 
 const trainSmokeStackMaterial = new th.MeshPhongMaterial({
-    color: '#ff7b00',
-    shininess: 50
+    color: '#ad8763',
+    map: getTexture('textures/metal.jpg', .1, .1),
+    shininess: 100
 });
 
 const trainRoofMaterial = new th.MeshPhongMaterial({
     color: '#f0e87d',
-    shininess: 10
+    map: getTexture('textures/metal.jpg', .1, .1),
+    shininess: 100
 });
 
 const trainMotorMaterial = new th.MeshPhongMaterial({
-    color: '#7c7c7c',
+    color: '#b1b1b1',
+    map: getTexture('textures/metal.jpg', .1, .1),
     shininess: 100
 });
 
 const trainWheelsMaterial = new th.MeshPhongMaterial({
     color: '#000000',
-    shininess: 80
+    map: getTexture('textures/metal.jpg', .1, .1),
+    shininess: 100
 });
 
 const trainRodMaterial = new th.MeshPhongMaterial({
-    color: '#b1b1b1',
+    color: '#d8d8d8',
+    map: getTexture('textures/metal.jpg', .1, .1),
     shininess: 100
 });
 
 const trainPistonMaterial = new th.MeshPhongMaterial({
     color: '#310000',
+    map: getTexture('textures/metal.jpg', .1, .1),
     shininess: 80
 });
 
@@ -329,6 +337,7 @@ wheelAnimations.push((rotation) => {
 export function generateTrain() {
     train.traverse((child) => {
         if(child.isMesh) {
+            resetUVs(child);
             child.castShadow = true;
         }
     })

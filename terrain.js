@@ -2,15 +2,8 @@ import * as th from 'three';
 
 function getTextures(textures) {
     const loader = new th.TextureLoader();
-    return textures.map(source => {
-        return new Promise((resolve, reject) => {
-            loader.load(
-                source,
-                texture => resolve(texture),
-                undefined, 
-                err => reject(err)
-            )
-        })
+    return textures.map((source) => {
+        return loader.load(source);
     });
 }
 
@@ -26,13 +19,13 @@ export async function generateTerrain(size=1024, segments=512, scale = 256) {
 
     let displacement, grass, normal = undefined;
     
-    await Promise.all(getTextures(['textures/heightmap.png', 'textures/grass.png', 'textures/normalmap.png']))
+    await Promise.all(getTextures(['textures/heightmap.png', 'textures/grass.jpg', 'textures/normalmap.png']))
     .then( textures => {
         displacement = textures[0];
         grass = textures[1];
         normal = textures[2];
         grass.wrapS = grass.wrapT = th.RepeatWrapping;
-        grass.repeat.set(16,16);
+        grass.repeat.set(64,64);
     })
 
     const groundMat = new th.MeshPhongMaterial ({

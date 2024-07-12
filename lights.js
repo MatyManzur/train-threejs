@@ -1,5 +1,6 @@
 import * as th from 'three';
 import { Sky } from 'three/addons/objects/Sky.js';
+import { getTexture, resetUVs } from './texture';
 
 export const offLightMaterial = new th.MeshPhongMaterial({
     color: '#668186',
@@ -14,13 +15,15 @@ export const onLightMaterial = new th.MeshPhongMaterial({
 });
 
 const lampMaterial = new th.MeshPhongMaterial({
-    color: '#b6b6b6',
+    map: getTexture('textures/metal.jpg', .1, .1),
+    
     shininess: 100,
     specular: '#ffffff',
 });
 
 const lampDetailMaterial = new th.MeshPhongMaterial({
-    color: '#797979',
+    map: getTexture('textures/metal.jpg', .1, .1),
+    color: '#b6b6b6',
     shininess: 20,
     specular: '#ffffff',
 });
@@ -95,10 +98,15 @@ export function setSunPosition(angle) {
     sky.material.uniforms[ 'sunPosition' ].value.copy( sun );
     directionaLight.position.setFromSphericalCoords(1000, phi, theta);
     if (angle < MAX_ANGLE) {
+        directionaLight.visible = true;
         directionaLight.color.set(sunLightColorGradient[Math.floor(angle/angleSteps)]);
     }
-    if (angle > 360-MAX_ANGLE) {
+    else if (angle > 360-MAX_ANGLE) {
+        directionaLight.visible = true;
         directionaLight.color.set(sunLightColorGradient[Math.floor((360-angle)/angleSteps)]);
+    }
+    else {
+        directionaLight.lightOn = false;
     }
 }
 
@@ -150,6 +158,7 @@ export function generateLampPost(height=18) {
 
     lamp.traverse((child) => {
         if(child.isMesh) {
+            resetUVs(child);
             child.castShadow = true;
         }
     })

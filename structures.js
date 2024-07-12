@@ -1,17 +1,18 @@
 import * as th from 'three';
+import { getTexture, resetUVs } from './texture';
 
 const tunnelMaterial = new th.MeshPhongMaterial({
-    color: '#573824',
+    map: getTexture('textures/wood.jpg', .1, .1, Math.PI/2),
     shininess: 0,
 });
 
 const bridgeArcMaterial = new th.MeshPhongMaterial({
-    color: '#e46647',
+    map: getTexture('textures/brick.jpg', .1, .1),
     shininess: 10,
 });
 
 const topStructureMaterial = new th.MeshPhongMaterial({
-    color: '#777777',
+    map: getTexture('textures/metal.jpg', .1, .1),
     shininess: 100,
     specular: '#a3a3a3'
 })
@@ -48,6 +49,7 @@ export function generateTunnel(length = TUNNEL_LENGTH, height = TUNNEL_HEIGHT, w
 
     const tunnelExtrudeSettings = {
         depth: length,
+        curveSegments: 64,
     }
 
     const tunnelGeometry = new th.ExtrudeGeometry(tunnelShape, tunnelExtrudeSettings);
@@ -57,6 +59,7 @@ export function generateTunnel(length = TUNNEL_LENGTH, height = TUNNEL_HEIGHT, w
             child.castShadow = true;
         }
     })
+    
     return tunnel;
 
 }
@@ -191,6 +194,7 @@ export function generateBridge(bridgeLength, bridgeWidth, bridgeColumnsHeight, t
 
     bridge.traverse((child) => {
         if(child.isMesh) {
+            resetUVs(child);
             child.castShadow = true;
         }
     })
