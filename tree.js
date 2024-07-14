@@ -1,42 +1,47 @@
 import * as th from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { getTexture, resetUVs } from './texture';
 
-const treeTrunkMaterial = new th.MeshPhongMaterial(
+const treeTrunkTextureSettings = {
+    repeatX: 2,
+    repeatY: 2,
+    rotation: 0,
+}
+
+const treeTrunkMaterial = new th.MeshPhysicalMaterial(
     {   
-        color: '#3d2116',
-        shininess: 0
+        map: getTexture('textures/bark/color.jpg', treeTrunkTextureSettings.repeatX, treeTrunkTextureSettings.repeatY, treeTrunkTextureSettings.rotation),
+        normalMap: getTexture('textures/bark/normal.jpg', treeTrunkTextureSettings.repeatX, treeTrunkTextureSettings.repeatY, treeTrunkTextureSettings.rotation),
+        aoMap: getTexture('textures/bark/ao.jpg', treeTrunkTextureSettings.repeatX, treeTrunkTextureSettings.repeatY, treeTrunkTextureSettings.rotation),
+        roughnessMap: getTexture('textures/bark/rough.jpg', treeTrunkTextureSettings.repeatX, treeTrunkTextureSettings.repeatY, treeTrunkTextureSettings.rotation),
+        shininess: 0,
+        normalScale: new th.Vector2(6,6),
     }
 )
+
+const treeLeavesTextureSettings = {
+    repeatX: 8,
+    repeatY: 4,
+    rotation: 0,
+}
+
 const treeLeavesMaterial = new th.MeshPhongMaterial(
     {
-        color: '#669739',
-        shininess: 10,
+        map: getTexture('textures/leaves/color.jpg', treeLeavesTextureSettings.repeatX, treeLeavesTextureSettings.repeatY, treeLeavesTextureSettings.rotation),
+        normalMap: getTexture('textures/leaves/normal.jpg', treeLeavesTextureSettings.repeatX, treeLeavesTextureSettings.repeatY, treeLeavesTextureSettings.rotation),
+        aoMap: getTexture('textures/leaves/ao.jpg', treeLeavesTextureSettings.repeatX, treeLeavesTextureSettings.repeatY, treeLeavesTextureSettings.rotation),
+        roughnessMap: getTexture('textures/leaves/rough.jpg', treeLeavesTextureSettings.repeatX, treeLeavesTextureSettings.repeatY, treeLeavesTextureSettings.rotation),
+        shininess: 0,
+        normalScale: new th.Vector2(3,3),
+        color: '#859b82'
     }
 )
 
-function getTreeModel(model) {
-    const loader = new GLTFLoader();
-    const obj = new Promise((resolve) => {
-        loader.load(model, (object) => {
-            object.scene.traverse((child) => {
-                if (child.isMesh) {
-                    switch(child.name) {
-                        case "Cylinder":
-                            child.material = treeTrunkMaterial;
-                            break;
-                        case "Icosphere":
-                            child.material = treeLeavesMaterial;
-                            break;
-                    }
-                }
-            })
-            resolve(object.scene);
-        }, undefined, (error) => {
-            console.error(error);
-        })
-    });
-    return obj;
-}
+const TRUNK_RADIUS = 1;
+const PINE_BOTTOM_RADIUS = 6;
+const PINE_CONE_HEIGHT = 10;
+const PINE_CONE_DIFF = 5;
+const PINE_TRUNK_HEIGHT = 4;
+
 
 /**
  * Genera un árbol con las dimensiones indicadas
@@ -46,7 +51,27 @@ function getTreeModel(model) {
  * @returns {Promise<Object3D>} el objeto arbol
  */
 export async function generateTree(width = 1, height= 1.2, rotation = 0) {
-    const object = await getTreeModel("./models/tree/tree.gltf");
+    const object = new th.Group();
+
+    const log = new th.Mesh(
+        new th.CylinderGeometry(TRUNK_RADIUS*0.9, TRUNK_RADIUS, PINE_TRUNK_HEIGHT),
+        treeTrunkMaterial,
+    )
+
+    const lower_cone = new th.Mesh(
+        new th.ConeGeometry(PINE_BOTTOM_RADIUS, PINE_CONE_HEIGHT),
+        treeLeavesMaterial,
+    )
+    lower_cone.position.setY((PINE_CONE_HEIGHT/4) + PINE_TRUNK_HEIGHT);
+
+    const top_cone = lower_cone.clone();
+    top_cone.scale.set(0.8,0.8,0.8);
+    lower_cone.add(top_cone);
+    top_cone.position.setY(PINE_CONE_DIFF);
+
+    object.add(log);
+    object.add(lower_cone);
+
     object.rotation.y = rotation;
     object.scale.set(width, height, width);
     object.traverse((child) => {
@@ -70,7 +95,7 @@ function getRandomFloat(max) {
  * @param {boolean} drawHelper      si se debe mostrar un helper del circulo
  * @returns {Promise<Group>}        el grupo que contiene a los arboles
  */
-export async function generateForest(radius = 100, trees = 8, minSize = 0.8, maxSize = 1.3, drawHelper = false) {
+export async function generateForest(radius = 100, trees = 8, minSize = 1.0, maxSize = 1.6, drawHelper = false) {
     const group = new th.Group();
     for(let i = 0;i<trees;i++) {
         const size = minSize + getRandomFloat(maxSize - minSize);
