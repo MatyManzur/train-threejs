@@ -83,7 +83,7 @@ export function getRailPath() {
     return railPath;
 }
 
-const pathLength = railPath.getLength();
+export const pathLength = railPath.getLength();
 
 /**
  * Devuelve el punto que corresponde a la distancia indicada recorrida sobre la curva
