@@ -1,4 +1,7 @@
 import * as th from 'three';
+import CustomShaderMaterial from "three-custom-shader-material/vanilla";
+import FragmentShader from "./shaders/terrain_frag.glsl";
+import VertexShader from "./shaders/terrain_vert.glsl";
 
 function getTextures(textures) {
     const loader = new th.TextureLoader();
@@ -17,24 +20,38 @@ function getTextures(textures) {
 export async function generateTerrain(size=1024, segments=512, scale = 256) {
     const groundGeo = new th.PlaneGeometry(size, size, segments, segments);
 
-    let displacement, grass, normal = undefined;
+    let displacement, grass, normal, snow, sand = undefined;
     
-    await Promise.all(getTextures(['textures/heightmap.png', 'textures/grass.jpg', 'textures/normalmap.png']))
+    await Promise.all(getTextures(['textures/heightmap.png', 'textures/grass.jpg', 'textures/normalmap.png', 'textures/snow.jpg', 'textures/sand.jpg']))
     .then( textures => {
         displacement = textures[0];
         grass = textures[1];
         normal = textures[2];
-        grass.wrapS = grass.wrapT = th.RepeatWrapping;
-        grass.repeat.set(64,64);
-    })
+        snow = textures[3];
+        sand = textures[4];
+    });
 
-    const groundMat = new th.MeshPhongMaterial ({
-        map: grass,
+    const groundMat = new CustomShaderMaterial({
+        baseMaterial: th.MeshPhysicalMaterial,
+        fragmentShader: FragmentShader,
+        vertexShader: VertexShader,
+        uniforms: {
+            bottomTexture: {value: sand},
+            middleTexture: {value: grass},
+            topTexture: {value: snow},
+            bottomTextureRepeat: {value: [64,64]},
+            middleTextureRepeat: {value: [48,48]},
+            topTextureRepeat: {value: [64,64]},
+            bottomTextureEnd: {value: 0.19},
+            middleTextureStart: {value: 0.2201},
+            middleTextureEnd: {value: 0.4},
+            topTextureStart: {value: 0.45},
+        },
         displacementMap: displacement,
         normalMap: normal,
         displacementScale: scale,
         shininess: 10,
-    });
+    })
 
     let groundMesh = new th.Mesh(groundGeo, groundMat);
     groundMesh.rotation.x = -Math.PI / 2;
