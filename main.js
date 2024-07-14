@@ -70,6 +70,24 @@ scene.add(rails);
 const train = generateTrain();
 scene.add(train);
 
+// Sonido del tren
+const listener = new th.AudioListener();
+camera.add(listener);
+
+const sound = new th.PositionalAudio(listener);
+const audioLoader = new th.AudioLoader();
+audioLoader.load('assets/train.mp3', function (buffer) {
+    sound.setBuffer(buffer);
+    sound.autoplay = true;
+    sound.setLoop(true);
+    sound.playbackRate = 1;
+    sound.setRefDistance(20);
+    sound.play();
+})
+
+train.add(sound);
+
+
 // Túnel
 const tunnel = generateTunnel();
 tunnel.rotateY(Math.PI/2);
@@ -199,7 +217,13 @@ function animate() {
     //...animations...
     timeOfDay += guiControls.velocidad_del_dia*0.1;
     setSunPosition(timeOfDay);
-    animateTrain(guiControls.velocidad_del_tren, 64.7);21
+    animateTrain(guiControls.velocidad_del_tren, 64.7);
+    if(Math.abs(guiControls.velocidad_del_tren) < 5) {
+        sound.setPlaybackRate(0);
+    }
+    else {
+        sound.setPlaybackRate(1);
+    }
     updateCamera(camera);
 
     renderer.render(scene, camera);
