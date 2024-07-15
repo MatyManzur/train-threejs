@@ -1,40 +1,9 @@
 import * as th from 'three';
-import { getTexture, resetUVs } from './texture';
+import { getMaterialFromTextureFolder } from './texture';
 
-const treeTrunkTextureSettings = {
-    repeatX: 2,
-    repeatY: 2,
-    rotation: 0,
-}
+const treeTrunkMaterial = getMaterialFromTextureFolder('leaves', 2, 2, 0, 6);
 
-const treeTrunkMaterial = new th.MeshPhysicalMaterial(
-    {   
-        map: getTexture('textures/bark/color.jpg', treeTrunkTextureSettings.repeatX, treeTrunkTextureSettings.repeatY, treeTrunkTextureSettings.rotation),
-        normalMap: getTexture('textures/bark/normal.jpg', treeTrunkTextureSettings.repeatX, treeTrunkTextureSettings.repeatY, treeTrunkTextureSettings.rotation),
-        aoMap: getTexture('textures/bark/ao.jpg', treeTrunkTextureSettings.repeatX, treeTrunkTextureSettings.repeatY, treeTrunkTextureSettings.rotation),
-        roughnessMap: getTexture('textures/bark/rough.jpg', treeTrunkTextureSettings.repeatX, treeTrunkTextureSettings.repeatY, treeTrunkTextureSettings.rotation),
-        shininess: 0,
-        normalScale: new th.Vector2(6,6),
-    }
-)
-
-const treeLeavesTextureSettings = {
-    repeatX: 8,
-    repeatY: 4,
-    rotation: 0,
-}
-
-const treeLeavesMaterial = new th.MeshPhongMaterial(
-    {
-        map: getTexture('textures/leaves/color.jpg', treeLeavesTextureSettings.repeatX, treeLeavesTextureSettings.repeatY, treeLeavesTextureSettings.rotation),
-        normalMap: getTexture('textures/leaves/normal.jpg', treeLeavesTextureSettings.repeatX, treeLeavesTextureSettings.repeatY, treeLeavesTextureSettings.rotation),
-        aoMap: getTexture('textures/leaves/ao.jpg', treeLeavesTextureSettings.repeatX, treeLeavesTextureSettings.repeatY, treeLeavesTextureSettings.rotation),
-        roughnessMap: getTexture('textures/leaves/rough.jpg', treeLeavesTextureSettings.repeatX, treeLeavesTextureSettings.repeatY, treeLeavesTextureSettings.rotation),
-        shininess: 0,
-        normalScale: new th.Vector2(3,3),
-        color: '#859b82'
-    }
-)
+const treeLeavesMaterial = getMaterialFromTextureFolder('leaves', 8, 4, 0, 3, false, '#859b82');
 
 const TRUNK_RADIUS = 1;
 const PINE_BOTTOM_RADIUS = 6;

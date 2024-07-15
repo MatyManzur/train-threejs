@@ -9,6 +9,22 @@ export function getTexture(source, repeatX, repeatY, rotation = 0) {
     return txt;
 }
 
+export function getMaterialFromTextureFolder(textureName, repeatX=1, repeatY=1, rotation=0, normalScale=1, includeMetallic=false, color='#ffffff', specularIntensity = 1) {
+    const material = new th.MeshPhysicalMaterial({
+            map: getTexture(`textures/${textureName}/color.jpg`, repeatX, repeatY, rotation),
+            normalMap: getTexture(`textures/${textureName}/normal.jpg`, repeatX, repeatY, rotation),
+            aoMap: getTexture(`textures/${textureName}/ao.jpg`, repeatX, repeatY, rotation),
+            roughnessMap: getTexture(`textures/${textureName}/rough.jpg`, repeatX, repeatY, rotation),
+            normalScale: new th.Vector2(normalScale, normalScale),
+            color: color,
+            specularIntensity: specularIntensity,
+        });
+    if(includeMetallic) {
+        material.metalnessMap = getTexture(`textures/${textureName}/metallic.jpg`, repeatX, repeatY, rotation);
+    }
+    return material;
+}
+
 export function resetUVs(object) {
     var pos = object.geometry.getAttribute('position'),
         nor = object.geometry.getAttribute('normal'),

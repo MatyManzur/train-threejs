@@ -2,50 +2,21 @@ import * as th from 'three';
 import { getPointAt, getTangentAt } from './path';
 import { offLightMaterial, onLightMaterial } from './lights';
 import { createCameraNumber } from './camera';
-import { getTexture, resetUVs } from './texture';
+import { getMaterialFromTextureFolder, getTexture, resetUVs } from './texture';
 
+const trainBodyMaterial = getMaterialFromTextureFolder('paint', .125, .125, 0, 1, true);
 
-const trainBodyMaterial = new th.MeshPhongMaterial({
-    color: '#ffb078',
-    map: getTexture('textures/metal.jpg', .1, .1),
-    shininess: 100,
-});
+const trainSmokeStackMaterial = getMaterialFromTextureFolder('paint', .125, .125, 0, 1, true, '#61725f');
 
-const trainSmokeStackMaterial = new th.MeshPhongMaterial({
-    color: '#ad8763',
-    map: getTexture('textures/metal.jpg', .1, .1),
-    shininess: 100
-});
+const trainRoofMaterial = getMaterialFromTextureFolder('paint', .125, .125, 0, 1, true, '#baffa9');
 
-const trainRoofMaterial = new th.MeshPhongMaterial({
-    color: '#f0e87d',
-    map: getTexture('textures/metal.jpg', .1, .1),
-    shininess: 100
-});
+const trainMotorMaterial = getMaterialFromTextureFolder('metal', .1, .1, 0, 1, true, '#b1b1b1', 1.6);
 
-const trainMotorMaterial = new th.MeshPhongMaterial({
-    color: '#b1b1b1',
-    map: getTexture('textures/metal.jpg', .1, .1),
-    shininess: 100
-});
+const trainWheelsMaterial = getMaterialFromTextureFolder('metal', .1, .1, 0, 1, true, '#000000', 1.6);
 
-const trainWheelsMaterial = new th.MeshPhongMaterial({
-    color: '#000000',
-    map: getTexture('textures/metal.jpg', .1, .1),
-    shininess: 100
-});
+const trainRodMaterial = getMaterialFromTextureFolder('metal', .1, .1, 0, 1, true, '#d8d8d8', 1.6);
 
-const trainRodMaterial = new th.MeshPhongMaterial({
-    color: '#d8d8d8',
-    map: getTexture('textures/metal.jpg', .1, .1),
-    shininess: 100
-});
-
-const trainPistonMaterial = new th.MeshPhongMaterial({
-    color: '#310000',
-    map: getTexture('textures/metal.jpg', .1, .1),
-    shininess: 80
-});
+const trainPistonMaterial = getMaterialFromTextureFolder('metal', .1, .1, 0, 1, true, '#310000', 1);
 
 const TRAIN_BARREL_DIAMETER = 5;
 const TRAIN_BARREL_LENGTH = 12;

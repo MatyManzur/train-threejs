@@ -1,6 +1,6 @@
 import * as th from 'three';
 import { getPointAt, getRailPath, getTangentAt, pathLength } from './path';
-import { getTexture, resetUVs } from './texture';
+import { getMaterialFromTextureFolder, getTexture, resetUVs } from './texture';
 
 const TERRAPLEN_WIDTH = 18;
 const TERRAPLEN_HEIGHT = 3;
@@ -14,26 +14,10 @@ const SLEEPER_HEIGHT = 0.5;
 const SLEEPER_LENGTH = 2.5;
 const SLEEPER_COUNT = 220;
 
-const terraplenMaterial = new th.MeshPhongMaterial(
-    {
-        map: getTexture('textures/dirt.jpg', .1, .1),
-        shininess: 0,
-    }
-)
-const railMaterial = new th.MeshPhongMaterial(
-    {
-        map: getTexture('textures/metal.jpg', .1, .1),
-        shininess: 100,
-        specular: '#cacacaff'
-    }
-)
-const sleeperMaterial = new th.MeshPhongMaterial(
-    {
-        map: getTexture('textures/plank.jpg', .15, .15, Math.PI/2),
-        color: '#797064',
-        shininess: 0,
-    }
-)
+const terraplenMaterial = getMaterialFromTextureFolder('dirt', .1, .1, 0, 6);
+const railMaterial = getMaterialFromTextureFolder('metal', .1, .1, 0, 1, true, '#ffffff', 2);
+const sleeperMaterial = getMaterialFromTextureFolder('plank', .15, .15, Math.PI/2, 3, false, '#5e574e', 0.2);
+
 
 const terraplenShape = new th.Shape();
 terraplenShape.moveTo(0, -TERRAPLEN_WIDTH / 2);

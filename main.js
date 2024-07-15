@@ -40,7 +40,7 @@ const lampPositions = [ new th.Vector3(218,0,165),new th.Vector3(286,0,39),new t
                         new th.Vector3(76,0,136)];
 lampPositions.forEach((position) => {
     const lamp = generateLampPost();
-    lamp.position.set(position.x, 56.5, position.z);
+    lamp.position.set(position.x, 56.25, position.z);
     scene.add(lamp);
 });
 
@@ -144,7 +144,8 @@ const guiControls = {
     velocidad_del_dia: 1,
     nivel_del_agua: 0,
     sombras: true,
-    camara: 'Orbital'
+    camara: 'Orbital',
+    volumen_sonido: 1,
 }
 
 let timeOfDay = 0;
@@ -158,6 +159,7 @@ function guiChanged() {
         selected_camera = camera_names.indexOf(guiControls.camara);
         setCameraNumber(selected_camera, camera, renderer);
     }
+    sound.setVolume(guiControls.volumen_sonido);
 }
 
 const gui = new GUI();
@@ -168,6 +170,8 @@ gui.add(guiControls, 'velocidad_del_dia', -5, 5, 0.25).listen();
 gui.add(guiControls, 'nivel_del_agua', -40, 15, 1).onChange(guiChanged);
 gui.add(guiControls, 'camara', camera_names).listen().onChange(guiChanged);
 gui.add(guiControls, 'sombras').listen().onChange(guiChanged);
+gui.add(guiControls, 'volumen_sonido', 0, 2, 0.1).listen().onChange(guiChanged);
+
 
 guiChanged();
 
@@ -217,7 +221,7 @@ function animate() {
     //...animations...
     timeOfDay += guiControls.velocidad_del_dia*0.1;
     setSunPosition(timeOfDay);
-    animateTrain(guiControls.velocidad_del_tren, 64.7);
+    animateTrain(guiControls.velocidad_del_tren, 65.2);
     if(Math.abs(guiControls.velocidad_del_tren) < 5) {
         sound.setPlaybackRate(0);
     }

@@ -1,6 +1,6 @@
 import * as th from 'three';
 import { Sky } from 'three/addons/objects/Sky.js';
-import { getTexture, resetUVs } from './texture';
+import { getTexture, getMaterialFromTextureFolder, resetUVs } from './texture';
 
 export const offLightMaterial = new th.MeshPhongMaterial({
     color: '#668186',
@@ -14,19 +14,8 @@ export const onLightMaterial = new th.MeshPhongMaterial({
     color: '#ffffff',
 });
 
-const lampMaterial = new th.MeshPhongMaterial({
-    map: getTexture('textures/metal.jpg', .1, .1),
-    
-    shininess: 100,
-    specular: '#ffffff',
-});
-
-const lampDetailMaterial = new th.MeshPhongMaterial({
-    map: getTexture('textures/metal.jpg', .1, .1),
-    color: '#b6b6b6',
-    shininess: 20,
-    specular: '#ffffff',
-});
+const lampMaterial = getMaterialFromTextureFolder('metal', .1, .1, 0, 1, true);
+const lampDetailMaterial = getMaterialFromTextureFolder('metal', .1, .1, 0, 1, true, '#b6b6b6');
 
 const SHADOW_RESOLUTION = 4096;
 
@@ -34,7 +23,7 @@ const sunLightColorGradient = [ '#2f0f00', '#752901', '#b24502', '#e76104', '#fa
                         '#fa9d48', '#fbb46a', '#fbc687', '#fcd59f', '#fde0b2', 
                         '#fde8c2', '#fdefcf', '#fef4da', '#fef7e2', '#fef9e8',
                         '#fffbec', '#fffcef', '#fffdf1', '#fffef3', '#fffef4'].reverse();
-const MAX_ANGLE = 100;
+const MAX_ANGLE = 92;
 const angleSteps = MAX_ANGLE / sunLightColorGradient.length;
 
 const SUN_AZIMUTH = 235;
@@ -106,7 +95,7 @@ export function setSunPosition(angle) {
         directionaLight.color.set(sunLightColorGradient[Math.floor((360-angle)/angleSteps)]);
     }
     else {
-        directionaLight.lightOn = false;
+        directionaLight.visible = false;
     }
 }
 

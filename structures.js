@@ -1,21 +1,11 @@
 import * as th from 'three';
-import { getTexture, resetUVs } from './texture';
+import { getMaterialFromTextureFolder, resetUVs } from './texture';
 
-const tunnelMaterial = new th.MeshPhongMaterial({
-    map: getTexture('textures/wood.jpg', .1, .1, Math.PI/2),
-    shininess: 0,
-});
+const tunnelMaterial = getMaterialFromTextureFolder('wood', .1, .1, Math.PI/2, 2, false, '#ffffff', 0.2);
 
-const bridgeArcMaterial = new th.MeshPhongMaterial({
-    map: getTexture('textures/brick.jpg', .1, .1),
-    shininess: 10,
-});
+const bridgeArcMaterial = getMaterialFromTextureFolder('brick', .1, .1, 0, 2);
 
-const topStructureMaterial = new th.MeshPhongMaterial({
-    map: getTexture('textures/metal.jpg', .1, .1),
-    shininess: 100,
-    specular: '#a3a3a3'
-})
+const topStructureMaterial = getMaterialFromTextureFolder('metal', .1, .1, 0, 1, true, '#ffffff', 2);
 
 const TUNNEL_WIDTH = 35;
 const TUNNEL_HEIGHT = 20;
