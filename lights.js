@@ -79,12 +79,13 @@ export function setupNaturalLights(renderer, scene) {
  * Establece la posición del sol en un ángulo determinado
  * @param {number} angle    ángulo del sol entre 0 y 360, siendo 0 el mediodía
  */
-export function setSunPosition(angle) {
+export function setSunPosition(angle, onNewSunPosition = (sun) => {}) {
     angle %= 360;
     let phi = th.MathUtils.degToRad( angle );
     const theta = th.MathUtils.degToRad( SUN_AZIMUTH );
     sun.setFromSphericalCoords( 1, phi, theta );
     sky.material.uniforms[ 'sunPosition' ].value.copy( sun );
+    onNewSunPosition(sun);
     directionaLight.position.setFromSphericalCoords(1000, phi, theta);
     if (angle < MAX_ANGLE) {
         directionaLight.visible = true;

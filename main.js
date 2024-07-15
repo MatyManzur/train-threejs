@@ -10,6 +10,8 @@ import { createCameraNumber, initCameras, setCameraNumber, updateCamera } from '
 
 const BASE_WATER_LEVEL = 42;
 
+await new Promise(r => setTimeout(r, 2000));
+
 // Scene setup
 const scene = new th.Scene();
 const camera = new th.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
@@ -220,7 +222,10 @@ function animate() {
 
     //...animations...
     timeOfDay += guiControls.velocidad_del_dia*0.1;
-    setSunPosition(timeOfDay);
+    setSunPosition(timeOfDay, (sun) => {
+        water.material.uniforms[ 'sunDirection' ].value.copy( sun ).normalize();
+    });
+    water.material.uniforms['time'].value += guiControls.velocidad_del_dia*0.01;
     animateTrain(guiControls.velocidad_del_tren, 65.2);
     if(Math.abs(guiControls.velocidad_del_tren) < 5) {
         sound.setPlaybackRate(0);

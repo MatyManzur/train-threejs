@@ -2,6 +2,8 @@ import * as th from 'three';
 import CustomShaderMaterial from "three-custom-shader-material/vanilla";
 import FragmentShader from "./shaders/terrain_frag.glsl";
 import VertexShader from "./shaders/terrain_vert.glsl";
+import { Water } from "three/addons/objects/Water.js";
+import { getTexture } from './texture';
 
 function getTextures(textures) {
     const loader = new th.TextureLoader();
@@ -68,8 +70,22 @@ export async function generateTerrain(size=1024, segments=512, scale = 256) {
  */
 export async function generateWater(waterLevel = 1, color = '#1b145c', size=1024) {
     const waterGeo = new th.PlaneGeometry(size, size);
-
-    const waterMat = new th.MeshPhongMaterial ({
+    let waterNormals = undefined;
+    await Promise.all(getTextures(['textures/waternormals.jpg']))
+    .then((textures) => {
+        waterNormals = textures[0];
+        waterNormals.wrapS = waterNormals.wrapT = th.RepeatWrapping;
+    })
+    const waterMat = {
+        textureWidth: 512,
+        textureHeight: 512,
+        waterNormals: waterNormals,
+        sunDirection: new th.Vector3(),
+		sunColor: 0xffffff,
+        waterColor: color,
+        distortionScale: 1,
+    };
+    const waterMat2 = new th.MeshPhongMaterial ({
         color: color,
         shininess: 100,
         opacity: 0.8,
@@ -77,7 +93,7 @@ export async function generateWater(waterLevel = 1, color = '#1b145c', size=1024
         specular: '#ffffff',
     });
 
-    let waterMesh = new th.Mesh(waterGeo, waterMat);
+    let waterMesh = new Water(waterGeo, waterMat);
     waterMesh.rotation.x = -Math.PI / 2;
     waterMesh.position.y = waterLevel;
     return waterMesh;
