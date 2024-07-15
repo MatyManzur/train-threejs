@@ -84,9 +84,7 @@ audioLoader.load('assets/train.mp3', function (buffer) {
     sound.setLoop(true);
     sound.playbackRate = 1;
     sound.setRefDistance(20);
-    sound.play();
 })
-
 train.add(sound);
 
 
@@ -147,6 +145,7 @@ const guiControls = {
     nivel_del_agua: 0,
     sombras: true,
     camara: 'Orbital',
+    sonido_tren: false,
     volumen_sonido: 1,
 }
 
@@ -161,6 +160,11 @@ function guiChanged() {
         selected_camera = camera_names.indexOf(guiControls.camara);
         setCameraNumber(selected_camera, camera, renderer);
     }
+    if(guiControls.sonido_tren) {
+        sound.play();
+    } else {
+        sound.pause();
+    }
     sound.setVolume(guiControls.volumen_sonido);
 }
 
@@ -172,6 +176,7 @@ gui.add(guiControls, 'velocidad_del_dia', -5, 5, 0.25).listen();
 gui.add(guiControls, 'nivel_del_agua', -40, 15, 1).onChange(guiChanged);
 gui.add(guiControls, 'camara', camera_names).listen().onChange(guiChanged);
 gui.add(guiControls, 'sombras').listen().onChange(guiChanged);
+gui.add(guiControls, 'sonido_tren').listen().onChange(guiChanged);
 gui.add(guiControls, 'volumen_sonido', 0, 2, 0.1).listen().onChange(guiChanged);
 
 
