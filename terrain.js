@@ -52,7 +52,6 @@ export async function generateTerrain(size=1024, segments=512, scale = 256) {
         displacementMap: displacement,
         normalMap: normal,
         displacementScale: scale,
-        shininess: 10,
     })
 
     let groundMesh = new th.Mesh(groundGeo, groundMat);
@@ -85,13 +84,6 @@ export async function generateWater(waterLevel = 1, color = '#1b145c', size=1024
         waterColor: color,
         distortionScale: 1,
     };
-    const waterMat2 = new th.MeshPhongMaterial ({
-        color: color,
-        shininess: 100,
-        opacity: 0.8,
-        transparent: true,
-        specular: '#ffffff',
-    });
 
     let waterMesh = new Water(waterGeo, waterMat);
     waterMesh.rotation.x = -Math.PI / 2;
